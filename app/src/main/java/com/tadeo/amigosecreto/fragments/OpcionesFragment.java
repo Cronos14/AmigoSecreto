@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +16,10 @@ import android.view.ViewGroup;
 
 import com.tadeo.amigosecreto.R;
 import com.tadeo.amigosecreto.adapters.OpcionAdapter;
+import com.tadeo.amigosecreto.dialogs.DialogEditText;
 import com.tadeo.amigosecreto.models.Opcion;
+import com.tadeo.amigosecreto.tasks.Tarea;
+import com.tadeo.amigosecreto.tasks.TareaAgregarOpcion;
 import com.tadeo.amigosecreto.utils.Singleton;
 
 import java.util.ArrayList;
@@ -73,7 +77,35 @@ public class OpcionesFragment extends Fragment {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DialogEditText dialogEditText = new DialogEditText();
+                dialogEditText.setTitulo("Escribe una opcion");
+                dialogEditText.setOnClickListener(new DialogEditText.OnClickListener() {
+                    @Override
+                    public void onClick(final String textEditText) {
 
+                        TareaAgregarOpcion tareaAgregarOpcion = new TareaAgregarOpcion((AppCompatActivity)getActivity(),"Agregando opcion...");
+                        tareaAgregarOpcion.setOnPostExecuteListener(new Tarea.OnPostExecuteListener() {
+                            @Override
+                            public void onPostExecute(Object object) {
+                                if(object instanceof Boolean){
+                                    if((Boolean)object){
+                                        Opcion opcion = new Opcion();
+                                        opcion.setNombre(textEditText);
+                                        opcion.setIdUsuario(Singleton.getInstance().getFactoryLogin().getUsuario().getId());
+                                        Singleton.getInstance().getFactoryLogin().getOpciones().add(opcion);
+                                        data.add(opcion);
+                                    }
+                                }
+                            }
+                        });
+
+                        tareaAgregarOpcion.execute(String.valueOf(Singleton.getInstance().getFactoryLogin().getUsuario().getId()),textEditText);
+
+
+
+                    }
+                });
+                dialogEditText.show(getFragmentManager(),"dialogEditText");
             }
         });
 

@@ -7,9 +7,18 @@
     android:id="@+id/coordinador">
 
     <LinearLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mis Opciones"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textSize="25dp"
+            android:layout_marginBottom="16dp"/>
 
 
         <android.support.v7.widget.RecyclerView
@@ -20,7 +29,9 @@
 
 
         </android.support.v7.widget.RecyclerView>
+
     </LinearLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -31,5 +42,7 @@
         app:layout_anchor="@id/general_recycler"
         app:layout_anchorGravity="bottom|right|end"
         />
+
+
 
 </android.support.design.widget.CoordinatorLayout>

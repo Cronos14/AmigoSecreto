@@ -12,11 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.tadeo.amigosecreto.R;
 import com.tadeo.amigosecreto.adapters.OpcionAdapter;
+import com.tadeo.amigosecreto.dialogs.DialogGeneral;
 import com.tadeo.amigosecreto.models.Opcion;
+import com.tadeo.amigosecreto.models.Usuario;
 import com.tadeo.amigosecreto.utils.Singleton;
 
 import java.util.ArrayList;
@@ -74,8 +75,39 @@ public class AmigoSecretoFragment extends Fragment {
        verAmigoSecreto.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
-               Toast.makeText(getContext(),Singleton.getInstance().getFactoryLogin().getPersonaSecreta().getNombre(),Toast.LENGTH_LONG).show();
+
+               Usuario personaSecreta = Singleton.getInstance().getFactoryLogin().getPersonaSecreta();
+               if(personaSecreta.getNombre()==null || personaSecreta.getNombre().isEmpty()){
+                   DialogGeneral dialogGeneral = new DialogGeneral();
+                   dialogGeneral.setParametros("Tu amigo secreto","Aun no tienes un amigo secreto :(",1);
+                   dialogGeneral.setOnClickListener(new DialogGeneral.OnClickListener() {
+                       @Override
+                       public void onClick(boolean flag) {
+
+                       }
+                   });
+                   dialogGeneral.show(getFragmentManager(),"dialog");
+               }else {
+
+                   DialogGeneral dialogGeneral = new DialogGeneral();
+                   dialogGeneral.setParametros("Tu amigo secreto", Singleton.getInstance().getFactoryLogin().getPersonaSecreta().getNombre(), 1);
+                   dialogGeneral.setOnClickListener(new DialogGeneral.OnClickListener() {
+                       @Override
+                       public void onClick(boolean flag) {
+
+                           data.clear();
+                           for (Opcion opcion : Singleton.getInstance().getFactoryLogin().getOpcionesPersonaSecreta()) {
+                               data.add(opcion);
+                           }
+
+                           adapter.notifyDataSetChanged();
+
+                       }
+                   });
+                   dialogGeneral.show(getFragmentManager(), "dialog");
+               }
            }
+
        });
 
         return view;
@@ -86,12 +118,7 @@ public class AmigoSecretoFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        data.clear();
-        for(Opcion opcion : Singleton.getInstance().getFactoryLogin().getOpcionesPersonaSecreta()){
-            data.add(opcion);
-        }
 
-        adapter.notifyDataSetChanged();
 
     }
 }

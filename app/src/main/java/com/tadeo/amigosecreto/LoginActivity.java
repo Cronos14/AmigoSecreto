@@ -1,6 +1,7 @@
 package com.tadeo.amigosecreto;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -26,26 +27,18 @@ public class LoginActivity extends AppCompatActivity {
         nombreUsuario = (AutoCompleteTextView)findViewById(R.id.user);
         entrar = (Button)findViewById(R.id.btn_login);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+        String name = sharedPreferences.getString("name","null");
+
+        if(name!=null && !name.equalsIgnoreCase("null")){
+            invocarServicio(name);
+        }
+
         entrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!TextUtils.isEmpty(nombreUsuario.getText())){
-                    TareaLogin tareaLogin = new TareaLogin(LoginActivity.this,"Entrando...");
-                    tareaLogin.setOnPostExecuteListener(new Tarea.OnPostExecuteListener() {
-                        @Override
-                        public void onPostExecute(Object object) {
-                            if(object instanceof FactoryLogin){
-                                FactoryLogin factoryLogin = (FactoryLogin)object;
-                                Singleton.getInstance().setFactoryLogin(factoryLogin);
-
-                                Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                                startActivity(intent);
-
-                            }
-                        }
-                    });
-
-                    tareaLogin.execute(nombreUsuario.getText().toString());
+                    invocarServicio(nombreUsuario.getText().toString());
                 }else{
                     nombreUsuario.setError("Campo Vacio");
                 }
@@ -53,5 +46,31 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void invocarServicio(String name){
+        TareaLogin tareaLogin = new TareaLogin(LoginActivity.this,"Entrando...");
+        tareaLogin.setOnPostExecuteListener(new Tarea.OnPostExecuteListener() {
+            @Override
+            public void onPostExecute(Object object) {
+                if(object instanceof FactoryLogin){
+                    FactoryLogin factoryLogin = (FactoryLogin)object;
+                    Singleton.getInstance().setFactoryLogin(factoryLogin);
+
+                    SharedPreferences sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("name",factoryLogin.getUsuario().getNombre());
+                    editor.commit();
+
+                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(intent);
+
+                    finish();
+
+                }
+            }
+        });
+
+        tareaLogin.execute(name);
     }
 }

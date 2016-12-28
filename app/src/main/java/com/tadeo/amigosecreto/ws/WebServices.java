@@ -11,6 +11,7 @@ public class WebServices {
 
     public static final String URL = "http://luctadeveloper.com/amigo_secreto/";
     public static final String REGISTRAR = "login.php";
+    public static final String AGREGAR_OPCION = "agregar_opcion.php";
 
     public static JSONObject serviceLogin(String nombreUsuario){
 
@@ -22,6 +23,19 @@ public class WebServices {
         }
 
         return Request.request(URL+REGISTRAR,params.toString(),true,"POST");
+    }
+
+    public static JSONObject serviceAgregarOpcion(String idUsuario,String opcion){
+
+        JSONObject params = new JSONObject();
+        try {
+            params.put("idUsuario",Integer.parseInt(idUsuario));
+            params.put("opcion",opcion);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return Request.request(URL+AGREGAR_OPCION,params.toString(),true,"POST");
     }
 
 }

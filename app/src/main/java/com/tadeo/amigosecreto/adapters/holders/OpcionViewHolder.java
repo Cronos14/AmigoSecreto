@@ -29,6 +29,8 @@ public class OpcionViewHolder extends ViewHolder {
 
         if (obj instanceof Opcion) {
             opcion = (Opcion) obj;
+
+            txtOpcion.setText(opcion.getNombre());
         }
 
 

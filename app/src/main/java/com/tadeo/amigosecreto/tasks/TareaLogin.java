@@ -57,26 +57,36 @@ public class TareaLogin extends Tarea {
     }
 
     private Usuario getUsuario(JSONObject jsonObjectUsuario){
+
         Usuario usuario = new Usuario();
-        usuario.setId(jsonObjectUsuario.optInt("id"));
-        usuario.setIdPush(jsonObjectUsuario.optString("id_push"));
-        usuario.setNombre(jsonObjectUsuario.optString("nombre"));
-        usuario.setContrasenia(jsonObjectUsuario.optString("contrasenia"));
+        if(jsonObjectUsuario!=null) {
+
+            usuario.setId(jsonObjectUsuario.optInt("id"));
+            usuario.setIdPush(jsonObjectUsuario.optString("id_push"));
+            usuario.setNombre(jsonObjectUsuario.optString("nombre"));
+            usuario.setContrasenia(jsonObjectUsuario.optString("contrasenia"));
+        }
 
         return usuario;
+
     }
 
     private ArrayList<Opcion> getOpciones(JSONArray jsonArrayOpciones){
 
-        ArrayList<Opcion> opcionesUsuario = new ArrayList<>();
-        for(int i = 0;i<jsonArrayOpciones.length();i++){
-            JSONObject jsonObjectOpcionUsuario = jsonArrayOpciones.optJSONObject(i);
 
-            Opcion opcion = new Opcion();
-            opcion.setId(jsonObjectOpcionUsuario.optInt("id"));
-            opcion.setIdUsuario(jsonObjectOpcionUsuario.optInt("id_usuario"));
-            opcion.setNombre(jsonObjectOpcionUsuario.optString("nombre"));
-            opcionesUsuario.add(opcion);
+
+        ArrayList<Opcion> opcionesUsuario = new ArrayList<>();
+
+        if(jsonArrayOpciones!=null) {
+            for (int i = 0; i < jsonArrayOpciones.length(); i++) {
+                JSONObject jsonObjectOpcionUsuario = jsonArrayOpciones.optJSONObject(i);
+
+                Opcion opcion = new Opcion();
+                opcion.setId(jsonObjectOpcionUsuario.optInt("id"));
+                opcion.setIdUsuario(jsonObjectOpcionUsuario.optInt("id_usuario"));
+                opcion.setNombre(jsonObjectOpcionUsuario.optString("nombre"));
+                opcionesUsuario.add(opcion);
+            }
         }
 
         return opcionesUsuario;
